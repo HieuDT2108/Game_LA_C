@@ -1,0 +1,57 @@
+  def run(self):
+        while self.gamerunning:
+            self.screen.blit(self.background, (0, 0))
+            for event in pygame.event.get():  # Bắt các sự kiện
+                # print(event)
+                if event.type == pygame .QUIT:  # sự kiện nhấn thoát
+                    self.gamerunning = False
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    self.yBird -= self.VBirdUp  # Bird bay lên
+                    self.music("./data/wet-click.wav")
+                if event.type == pygame.KEYDOWN:  # sự kiện có phím nhấn xuống
+                    if event.key == pygame.K_SPACE:
+                        self.yBird -= self.VBirdUp  # Bird bay lên
+                        self.music("./data/wet-click.wav")
+            self.yBird += self.VBirdDown  # Bird rớt xuống
+            yColunmChangeTop, yColunmChangeBotton = self.colunm()
+            # print(self.yBird,yColunmChangeTop,self.yBird+self.ySizeBird, yColunmChangeBotton)
+            # ---------Check xem bird chạm cột----------------------------------
+            if self.yBird < yColunmChangeTop and (self.xColunm+self.xSizeColunm - 5 > self.xBird+self.xSizeBird > self.xColunm + 5 or self.xColunm+self.xSizeColunm > self.xBird > self.xColunm):
+                self.checkLost = True
+            if self.yBird+self.ySizeBird > yColunmChangeBotton and (self.xColunm+self.xSizeColunm - 5 > self.xBird+self.xSizeBird > self.xColunm + 5 or self.xColunm+self.xSizeColunm > self.xBird > self.xColunm):
+                self.checkLost = True
+            # ---------Check xem bird có chạm tường-----------------------------
+            if (self.yBird + self.ySizeBird > self.yScreen) or self.yBird < 0:
+                self.yBird = self.yScreen/2
+                self.checkLost = True
+            self.Vcolunm = 6 if self.scores < 1 else 6 + self.scores/5  # Tốc độ tăng dần
+            self.VBirdDown = 7 if self.scores < 1 else 7 + \
+                self.scores/10  # Bird rơi nhanh dần
+            print(self.Vcolunm)
+            while(self.checkLost):  # Nếu Bird chạm vật
+                self.xColunm = self.xScreen+100
+                for event in pygame.event.get():   # Nếu nhấn
+                    if event.type == pygame.QUIT:  # Thoát
+                        self.gamerunning = False
+                        self.checkLost = False
+                        break
+                    if event.type == pygame.KEYDOWN:  # Thoát
+                        self.checkLost = False
+                        self.scores = 0
+                    if event.type == pygame.MOUSEBUTTONDOWN:
+                        self.checkLost = False
+                        self.scores = 0
+                self.show_score(100, 100, "Scores:{}".format(
+                    self.scores), 40)  # In điểm
+                self.show_score(self.xScreen/2-100, self.yScreen /
+                                2-100, "GAME OVER", 50)  # In Thông báo thua
+                self.Vcolunm = 6
+                self.VBirdDown = 7
+                pygame.display.update()
+            self.image_draw(self.linkImgBird, self.xBird,
+                            self.yBird, self.xSizeBird, self.ySizeBird)
+            self.show_score(self.xScreen - 200, 20, "duyduysysy@gmail.com", 15)
+            self.show_score(10, 10, "Scores:{}".format(self.scores), 35)
+            pygame.display.update()  # Update
+            clock = pygame.time.Clock()
+            clock.tick(80)
