@@ -35,7 +35,7 @@
                         self.gamerunning = False
                         self.checkLost = False
                         break
-                    if event.type == pygame.KEYDOWN:  # Thoát
+//Demo 11
                         self.checkLost = False
                         self.scores = 0
                     if event.type == pygame.MOUSEBUTTONDOWN:
